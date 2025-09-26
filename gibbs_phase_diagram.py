@@ -20,6 +20,12 @@ def __():
 def __(mo):
     mo.md(r"""
     # Gibbs Free Energy and Phase Diagrams: A 3D Perspective
+    
+    **Created by Anthony DiMascio**  
+    *OSU MATSCEN 3141 (5870) - Autumn 2025*  
+    *Professor Yunzhi Wang*
+
+    ---
 
     This interactive notebook demonstrates how temperature affects Gibbs free energy curves and how the common tangent construction determines phase boundaries.
 
@@ -185,10 +191,12 @@ def __(G_alpha, G_beta, dG_alpha_dx, dG_beta_dx, fsolve, np):
 @app.cell
 def __(mo):
     mo.md(r"""
-    ## 3D Gibbs Free Energy Surface
+    ## Interactive Thermodynamic Visualization
     
-    Below is the 3D surface showing how Gibbs free energy varies with both composition and temperature. 
-    The current temperature slice is highlighted in green.
+    All three visualizations update in real-time as you adjust the temperature slider above:
+    - **Top Left**: 3D Gibbs surface with current temperature slice
+    - **Bottom Left**: 2D Gibbs curves at current temperature  
+    - **Right**: Phase diagram showing all temperatures
     """)
     return
 
@@ -199,20 +207,31 @@ def __(
     G0_A_beta,
     G0_B_alpha,
     G0_B_beta,
+    G_alpha,
+    G_beta,
     R,
     T,
+    dG_alpha_dx,
+    dG_beta_dx,
+    fsolve,
+    mo,
     np,
     omega_alpha,
     omega_beta,
     plt,
+    tangent_found,
+    x1_tangent,
+    x2_tangent,
 ):
-    # Create 3D visualization of the Gibbs surface
-    fig_3d = plt.figure(figsize=(12, 8))
-    ax_3d = fig_3d.add_subplot(111, projection='3d')
+    # Create combined figure with all three visualizations
+    fig_combined = plt.figure(figsize=(20, 8))
+    
+    # 3D plot (left)
+    ax_3d = fig_combined.add_subplot(131, projection='3d')
     
     # Create meshgrid for composition and temperature
-    x_mesh = np.linspace(0.01, 0.99, 50)
-    T_mesh = np.linspace(300, 1500, 50)
+    x_mesh = np.linspace(0.01, 0.99, 30)  # Reduced for performance
+    T_mesh = np.linspace(300, 1500, 30)
     X, T_grid = np.meshgrid(x_mesh, T_mesh)
     
     # Calculate Gibbs energy for each phase across all compositions and temperatures
@@ -267,72 +286,15 @@ def __(
     poly = Poly3DCollection(verts, alpha=0.2, facecolor='green', edgecolor='green')
     ax_3d.add_collection3d(poly)
     
-    ax_3d.set_xlabel('Composition (x_B)', fontsize=12)
-    ax_3d.set_ylabel('Temperature (K)', fontsize=12)
-    ax_3d.set_zlabel('Gibbs Free Energy (J/mol)', fontsize=12)
-    ax_3d.set_title('3D Gibbs Free Energy Surface\nCurrent temperature slice shown in green', fontsize=14)
-    
-    # Set viewing angle
+    ax_3d.set_xlabel('Composition (x_B)', fontsize=10)
+    ax_3d.set_ylabel('Temperature (K)', fontsize=10)
+    ax_3d.set_zlabel('G (J/mol)', fontsize=10)
+    ax_3d.set_title('3D Gibbs Surface', fontsize=12)
     ax_3d.view_init(elev=20, azim=45)
     
-    plt.tight_layout()
-    gibbs_3d = plt.gcf()
-    plt.close()
+    # 2D Gibbs plot (middle)
+    ax_2d = fig_combined.add_subplot(132)
     
-    gibbs_3d
-    return (
-        G_alpha_line,
-        G_alpha_surf,
-        G_beta_line,
-        G_beta_surf,
-        Poly3DCollection,
-        T_grid,
-        T_line,
-        T_mesh,
-        X,
-        ax_3d,
-        calc_G_alpha_3d,
-        calc_G_beta_3d,
-        fig_3d,
-        gibbs_3d,
-        poly,
-        surf_alpha,
-        surf_beta,
-        verts,
-        x_line,
-        x_mesh,
-        xx,
-        yy,
-        zz,
-    )
-
-
-@app.cell
-def __(
-    G0_A_alpha,
-    G0_A_beta,
-    G0_B_alpha,
-    G0_B_beta,
-    G_alpha,
-    G_beta,
-    R,
-    T,
-    dG_alpha_dx,
-    dG_beta_dx,
-    fsolve,
-    mo,
-    np,
-    omega_alpha,
-    omega_beta,
-    plt,
-    tangent_found,
-    x1_tangent,
-    x2_tangent,
-):
-    # Create figure with side-by-side plots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-    
-    # LEFT PLOT: Gibbs free energy curves
     # Composition range
     x_range = np.linspace(0.001, 0.999, 500)
     
@@ -341,8 +303,8 @@ def __(
     G_beta_vals = [G_beta(x) for x in x_range]
     
     # Plot the curves
-    ax1.plot(x_range, G_alpha_vals, 'b-', linewidth=2, label='α phase')
-    ax1.plot(x_range, G_beta_vals, 'r-', linewidth=2, label='β phase')
+    ax_2d.plot(x_range, G_alpha_vals, 'b-', linewidth=2, label='α phase')
+    ax_2d.plot(x_range, G_beta_vals, 'r-', linewidth=2, label='β phase')
     
     # Plot common tangent if found
     if tangent_found:
@@ -352,19 +314,19 @@ def __(
         x_tangent = np.array([0, 1])
         y_tangent = y1 + slope * (x_tangent - x1_tangent)
         
-        ax1.plot(x_tangent, y_tangent, 'g--', linewidth=2, label='Common tangent')
-        ax1.plot(x1_tangent, y1, 'go', markersize=8)
-        ax1.plot(x2_tangent, G_beta(x2_tangent), 'go', markersize=8)
+        ax_2d.plot(x_tangent, y_tangent, 'g--', linewidth=2, label='Common tangent')
+        ax_2d.plot(x1_tangent, y1, 'go', markersize=8)
+        ax_2d.plot(x2_tangent, G_beta(x2_tangent), 'go', markersize=8)
         
         # Add vertical lines to show phase compositions
-        ax1.axvline(x=x1_tangent, color='g', linestyle=':', alpha=0.5)
-        ax1.axvline(x=x2_tangent, color='g', linestyle=':', alpha=0.5)
+        ax_2d.axvline(x=x1_tangent, color='g', linestyle=':', alpha=0.5)
+        ax_2d.axvline(x=x2_tangent, color='g', linestyle=':', alpha=0.5)
     
-    ax1.set_xlabel('Composition (x_B)', fontsize=12)
-    ax1.set_ylabel('Gibbs Free Energy (J/mol)', fontsize=12)
-    ax1.set_title(f'Gibbs Free Energy at T = {T} K', fontsize=14)
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
+    ax_2d.set_xlabel('Composition (x_B)', fontsize=10)
+    ax_2d.set_ylabel('Gibbs Free Energy (J/mol)', fontsize=10)
+    ax_2d.set_title(f'2D Slice at T = {T} K', fontsize=12)
+    ax_2d.legend()
+    ax_2d.grid(True, alpha=0.3)
     
     # Set reasonable y-axis limits
     all_vals = G_alpha_vals + G_beta_vals
@@ -372,10 +334,12 @@ def __(
     if finite_vals:
         y_min, y_max = min(finite_vals), max(finite_vals)
         y_range = y_max - y_min
-        ax1.set_ylim(y_min - 0.1*y_range, y_max + 0.1*y_range)
+        ax_2d.set_ylim(y_min - 0.1*y_range, y_max + 0.1*y_range)
     
-    # RIGHT PLOT: Phase diagram
-    # Calculate phase diagram by finding common tangents at different temperatures
+    # Phase diagram (right)
+    ax_phase = fig_combined.add_subplot(133)
+    
+    # Calculate phase diagram
     temperatures = np.linspace(300, 1500, 50)
     x1_values = []
     x2_values = []
@@ -445,32 +409,32 @@ def __(
     
     if valid_temps:
         # Plot the binodal curve
-        ax2.plot(x1_values, valid_temps, 'b-', linewidth=2, label='α phase boundary')
-        ax2.plot(x2_values, valid_temps, 'r-', linewidth=2, label='β phase boundary')
+        ax_phase.plot(x1_values, valid_temps, 'b-', linewidth=2, label='α phase boundary')
+        ax_phase.plot(x2_values, valid_temps, 'r-', linewidth=2, label='β phase boundary')
         
         # Fill the two-phase region
-        ax2.fill_betweenx(valid_temps, x1_values, x2_values, alpha=0.3, color='gray', label='α + β')
+        ax_phase.fill_betweenx(valid_temps, x1_values, x2_values, alpha=0.3, color='gray', label='α + β')
         
         # Add labels for single-phase regions
         if x1_values:
-            ax2.text(0.1, np.mean(valid_temps), 'α', fontsize=16, ha='center')
-            ax2.text(0.9, np.mean(valid_temps), 'β', fontsize=16, ha='center')
+            ax_phase.text(0.1, np.mean(valid_temps), 'α', fontsize=14, ha='center')
+            ax_phase.text(0.9, np.mean(valid_temps), 'β', fontsize=14, ha='center')
         
         # Mark current temperature
-        ax2.axhline(y=T, color='green', linestyle='--', linewidth=2, label=f'Current T = {T} K')
+        ax_phase.axhline(y=T, color='green', linestyle='--', linewidth=2, label=f'Current T = {T} K')
         
         # Mark current phase compositions if they exist
         if tangent_found:
-            ax2.plot(x1_tangent, T, 'go', markersize=10)
-            ax2.plot(x2_tangent, T, 'go', markersize=10)
+            ax_phase.plot(x1_tangent, T, 'go', markersize=10)
+            ax_phase.plot(x2_tangent, T, 'go', markersize=10)
     
-    ax2.set_xlabel('Composition (x_B)', fontsize=12)
-    ax2.set_ylabel('Temperature (K)', fontsize=12)
-    ax2.set_title('Phase Diagram', fontsize=14)
-    ax2.set_xlim(0, 1)
-    ax2.set_ylim(300, 1500)
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
+    ax_phase.set_xlabel('Composition (x_B)', fontsize=10)
+    ax_phase.set_ylabel('Temperature (K)', fontsize=10)
+    ax_phase.set_title('Phase Diagram', fontsize=12)
+    ax_phase.set_xlim(0, 1)
+    ax_phase.set_ylim(300, 1500)
+    ax_phase.legend(loc='upper center')
+    ax_phase.grid(True, alpha=0.3)
     
     plt.tight_layout()
     combined_plot = plt.gcf()
@@ -481,41 +445,64 @@ def __(
         G0_A_beta_temp,
         G0_B_alpha_temp,
         G0_B_beta_temp,
+        G_alpha_line,
+        G_alpha_surf,
         G_alpha_temp,
         G_alpha_vals,
+        G_beta_line,
+        G_beta_surf,
         G_beta_temp,
         G_beta_vals,
+        Poly3DCollection,
+        T_grid,
+        T_line,
+        T_mesh,
+        X,
         all_vals,
-        ax1,
-        ax2,
+        ax_2d,
+        ax_3d,
+        ax_phase,
+        calc_G_alpha_3d,
+        calc_G_beta_3d,
         combined_plot,
         dG_alpha_dx_temp,
         dG_beta_dx_temp,
-        fig,
+        fig_combined,
         finite_vals,
         guess,
         info,
+        poly,
         result,
         slope,
         slope_diff,
+        surf_alpha,
+        surf_beta,
         tangent_condition,
         tangent_diff,
         temp,
         temperatures,
         valid_temps,
+        verts,
         x1,
         x1_values,
         x2,
         x2_values,
+        x_line,
+        x_mesh,
         x_range,
         x_sol,
         x_tangent,
+        xx,
         y1,
         y_max,
         y_min,
         y_range,
         y_tangent,
+        yy,
+        zz,
     )
+
+
 
 
 @app.cell
@@ -566,10 +553,28 @@ def __(mo):
 
 
 @app.cell
+def __(mo):
+    mo.md(r"""
+    ---
+    
+    ### About This Notebook
+    
+    **Author:** Anthony DiMascio  
+    **Course:** OSU MATSCEN 3141 (5870) - Autumn 2025  
+    **Instructor:** Professor Yunzhi Wang  
+    **Live Demo:** [https://dimascad.github.io/gibbs-phase-diagram/](https://dimascad.github.io/gibbs-phase-diagram/)
+    
+    This interactive visualization was created using [marimo](https://marimo.io), a reactive Python notebook that enables real-time updates across all visualizations. The thermodynamic model uses regular solution theory with temperature-dependent reference energies to demonstrate phase equilibria principles.
+    
+    For questions or suggestions, please contact Anthony DiMascio.
+    """)
+    return
+
+
+@app.cell
 def __():
     return
 
 
 if __name__ == "__main__":
-    app.run() 
-# Added attribution
+    app.run()
