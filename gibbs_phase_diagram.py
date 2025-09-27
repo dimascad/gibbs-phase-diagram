@@ -194,9 +194,9 @@ def __(mo):
     ## Interactive Thermodynamic Visualization
     
     All three visualizations update in real-time as you adjust the temperature slider above:
-    - **Top Left**: 3D Gibbs surface with current temperature slice
-    - **Bottom Left**: 2D Gibbs curves at current temperature  
-    - **Right**: Phase diagram showing all temperatures
+    - **Top**: 3D Gibbs surface showing both phases, with the current temperature slice highlighted in green
+    - **Bottom Left**: 2D cross-section showing Gibbs curves and common tangent at current temperature  
+    - **Bottom Right**: Complete phase diagram showing equilibrium compositions at all temperatures
     """)
     return
 
@@ -223,11 +223,11 @@ def __(
     x1_tangent,
     x2_tangent,
 ):
-    # Create combined figure with all three visualizations
-    fig_combined = plt.figure(figsize=(20, 8))
+    # Create combined figure with better layout
+    fig_combined = plt.figure(figsize=(18, 12))
     
-    # 3D plot (left)
-    ax_3d = fig_combined.add_subplot(131, projection='3d')
+    # 3D plot (top, spanning full width)
+    ax_3d = fig_combined.add_subplot(2, 2, (1, 2), projection='3d')
     
     # Create meshgrid for composition and temperature
     x_mesh = np.linspace(0.01, 0.99, 30)  # Reduced for performance
@@ -286,14 +286,14 @@ def __(
     poly = Poly3DCollection(verts, alpha=0.2, facecolor='green', edgecolor='green')
     ax_3d.add_collection3d(poly)
     
-    ax_3d.set_xlabel('Composition (x_B)', fontsize=10)
-    ax_3d.set_ylabel('Temperature (K)', fontsize=10)
-    ax_3d.set_zlabel('G (J/mol)', fontsize=10)
-    ax_3d.set_title('3D Gibbs Surface', fontsize=12)
-    ax_3d.view_init(elev=20, azim=45)
+    ax_3d.set_xlabel('Composition (x_B)', fontsize=12)
+    ax_3d.set_ylabel('Temperature (K)', fontsize=12)
+    ax_3d.set_zlabel('G (J/mol)', fontsize=12)
+    ax_3d.set_title('3D Gibbs Free Energy Surface - Temperature Slice Shown in Green', fontsize=16)
+    ax_3d.view_init(elev=25, azim=-60)
     
-    # 2D Gibbs plot (middle)
-    ax_2d = fig_combined.add_subplot(132)
+    # 2D Gibbs plot (bottom left)
+    ax_2d = fig_combined.add_subplot(223)
     
     # Composition range
     x_range = np.linspace(0.001, 0.999, 500)
@@ -322,9 +322,9 @@ def __(
         ax_2d.axvline(x=x1_tangent, color='g', linestyle=':', alpha=0.5)
         ax_2d.axvline(x=x2_tangent, color='g', linestyle=':', alpha=0.5)
     
-    ax_2d.set_xlabel('Composition (x_B)', fontsize=10)
-    ax_2d.set_ylabel('Gibbs Free Energy (J/mol)', fontsize=10)
-    ax_2d.set_title(f'2D Slice at T = {T} K', fontsize=12)
+    ax_2d.set_xlabel('Composition (x_B)', fontsize=12)
+    ax_2d.set_ylabel('Gibbs Free Energy (J/mol)', fontsize=12)
+    ax_2d.set_title(f'2D Slice at T = {T} K', fontsize=14)
     ax_2d.legend()
     ax_2d.grid(True, alpha=0.3)
     
@@ -336,8 +336,8 @@ def __(
         y_range = y_max - y_min
         ax_2d.set_ylim(y_min - 0.1*y_range, y_max + 0.1*y_range)
     
-    # Phase diagram (right)
-    ax_phase = fig_combined.add_subplot(133)
+    # Phase diagram (bottom right)
+    ax_phase = fig_combined.add_subplot(224)
     
     # Calculate phase diagram
     temperatures = np.linspace(300, 1500, 50)
@@ -428,12 +428,12 @@ def __(
             ax_phase.plot(x1_tangent, T, 'go', markersize=10)
             ax_phase.plot(x2_tangent, T, 'go', markersize=10)
     
-    ax_phase.set_xlabel('Composition (x_B)', fontsize=10)
-    ax_phase.set_ylabel('Temperature (K)', fontsize=10)
-    ax_phase.set_title('Phase Diagram', fontsize=12)
+    ax_phase.set_xlabel('Composition (x_B)', fontsize=12)
+    ax_phase.set_ylabel('Temperature (K)', fontsize=12)
+    ax_phase.set_title('Phase Diagram', fontsize=14)
     ax_phase.set_xlim(0, 1)
     ax_phase.set_ylim(300, 1500)
-    ax_phase.legend(loc='upper center')
+    ax_phase.legend(loc='upper center', fontsize=10)
     ax_phase.grid(True, alpha=0.3)
     
     plt.tight_layout()
