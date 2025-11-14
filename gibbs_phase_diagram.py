@@ -681,13 +681,17 @@ def __(
 
 @app.cell
 def __(mo, tangent_found, x1_tangent, x2_tangent):
+    # Build the markdown content with proper string concatenation
+    alpha_comp = f"- α phase composition: x_B = {x1_tangent:.3f}" if tangent_found else ""
+    beta_comp = f"- β phase composition: x_B = {x2_tangent:.3f}" if tangent_found else ""
+    
     mo.md(f"""
     ## Current State Summary
 
     At the selected temperature:
     - Common tangent found: {"Yes" if tangent_found else "No"}
-    {f"- α phase composition: x_B = {x1_tangent:.3f}" if tangent_found else ""}
-    {f"- β phase composition: x_B = {x2_tangent:.3f}" if tangent_found else ""}
+    {alpha_comp}
+    {beta_comp}
 
     The common tangent construction determines the equilibrium compositions of coexisting phases. When two phases coexist at equilibrium, they must have equal chemical potentials, which is represented geometrically by the common tangent line touching both Gibbs curves.
     """)
