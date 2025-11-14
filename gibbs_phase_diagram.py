@@ -203,11 +203,6 @@ def __(G_alpha, G_beta, dG_alpha_dx, dG_beta_dx, fsolve, np):
 def __(mo):
     mo.md(r"""
     ## Interactive Thermodynamic Visualization
-    
-    All three visualizations update in real-time as you adjust the temperature slider above:
-    - **Left**: 3D Gibbs surface with phase diagram "shadow" on the bottom plane
-    - **Middle**: 2D Gibbs curves at current temperature  
-    - **Right**: Phase diagram showing all temperatures
     """)
     return
 
