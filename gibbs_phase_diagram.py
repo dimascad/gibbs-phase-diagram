@@ -23,7 +23,27 @@ def __(mo):
     
     This interactive notebook demonstrates how temperature affects Gibbs free energy curves and how the common tangent construction determines phase boundaries.
     
-    **Adjust the temperature slider below to explore the thermodynamic behavior:**
+    ## The 3D Thermodynamic Surface
+    
+    Imagine a 3D surface where:
+    - **X-axis**: Composition (mole fraction of component B)
+    - **Y-axis**: Temperature (K)
+    - **Z-axis**: Gibbs free energy (J/mol)
+    
+    Each phase (α and β) forms its own 3D surface. The 2D plots you see are horizontal slices through these surfaces at constant temperature.
+    
+    ## The Physics Behind It
+    
+    The Gibbs free energy for each phase is calculated using the **regular solution model**:
+    
+    $$G = G_{reference} + G_{mixing} + G_{excess}$$
+    
+    Where:
+    - $G_{reference} = x \cdot G°_B + (1-x) \cdot G°_A$ (temperature-dependent)
+    - $G_{mixing} = RT[x \ln(x) + (1-x) \ln(1-x)]$ (entropy of mixing)
+    - $G_{excess} = x(1-x) \cdot \omega$ (interaction energy)
+    
+    **Use the slider below to explore different temperature slices of the 3D surface!**
     """)
     return
 
@@ -710,33 +730,25 @@ def __(mo, tangent_found, x1_tangent, x2_tangent):
 @app.cell
 def __(mo):
     mo.md(r"""
-    ## The 3D Thermodynamic Surface
+    ## Understanding the 3D → 2D Connection
     
-    The visualization above shows a 3D surface where:
-    - **X-axis**: Composition (mole fraction of component B)
-    - **Y-axis**: Temperature (K)
-    - **Z-axis**: Gibbs free energy (J/mol)
+    ### What You're Seeing:
     
-    Each phase (α and β) forms its own 3D surface. The 2D plots you see are horizontal slices through these surfaces at constant temperature.
+    1. **The 3D Surface (left)**: Shows the complete Gibbs free energy landscape. Each phase creates a curved surface in 3D space. The green plane shows where we're "slicing" at the current temperature.
     
-    ## Understanding the Visualizations
+    2. **The 2D Plots (middle)**: These are the intersection of the green plane with the 3D surfaces - like cutting through a mountain and looking at the cross-section.
     
-    1. **The 3D Surface (left)**: Shows the complete Gibbs free energy landscape. The phase diagram appears as a "shadow" on the bottom plane - this is where the surfaces meet via common tangents at each temperature.
+    3. **The Phase Diagram (right)**: Maps out all the common tangent points across all temperatures, creating the phase boundaries.
     
-    2. **The 2D Plot (middle)**: This is the intersection of the green plane with the 3D surfaces - like cutting through a mountain and looking at the cross-section.
+    ### The Mathematical Magic:
     
-    3. **The Phase Diagram (right)**: Maps out all the common tangent points across all temperatures, creating the phase boundaries. Notice how it matches the shadow on the 3D plot!
+    At each temperature, we solve for where:
+    - The slopes (chemical potentials) are equal: $\frac{\partial G_\alpha}{\partial x} = \frac{\partial G_\beta}{\partial x}$
+    - A single tangent line connects both curves
     
-    ## The Physics Behind It
+    This gives us the equilibrium compositions where both phases can coexist!
     
-    The Gibbs free energy for each phase is calculated using the **regular solution model**, which combines:
-    - Reference energies (temperature-dependent baseline for each component)
-    - Entropy of mixing (favors mixed states)
-    - Excess interaction energy (can favor separation)
-    
-    At each temperature, the common tangent construction finds where both phases have equal chemical potentials - this determines the equilibrium phase compositions.
-    
-    ### Temperature Effects:
+    ### Try This:
     
     - **Low temperatures** (300-600K): Strong phase separation due to high interaction energy
     - **Medium temperatures** (700-1000K): Moderate miscibility gap
