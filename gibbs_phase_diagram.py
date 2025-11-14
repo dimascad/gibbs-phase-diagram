@@ -24,6 +24,12 @@ def __():
 def __(mo):
     mo.md(r"""
     # Gibbs Free Energy & Phase Diagrams: Interactive Visualization
+    
+    ## The Geometry Behind Phase Diagrams
+    
+    Phase diagrams are the roadmaps of materials science, but the connection from Gibbs free energy equations to these diagrams can be opaque. This visualization shows the geometry that connects them.
+    
+    **The key insight:** Phase diagrams are 2D projections of 3D thermodynamic surfaces.
     """)
     return
 
@@ -726,6 +732,8 @@ def __(mo):
     
     $$G_{excess} = x(1-x) \cdot \omega \text{ (interaction energy)}$$
     
+    These equations define 3D surfaces in composition-temperature-energy space. The phase boundaries form where these surfaces intersect through common tangents.
+    
     ## Understanding the 3D → 2D Connection
     
     ### What You're Seeing:
@@ -735,6 +743,14 @@ def __(mo):
     2. **The 2D Plots (middle)**: These are the intersection of the green plane with the 3D surfaces - like cutting through a mountain and looking at the cross-section.
     
     3. **The Phase Diagram (right)**: Shows how the common tangent segments at each temperature combine to form the complete phase boundary region. The green dashed line indicates the current temperature's equilibrium compositions. Notice how these boundaries perfectly match the "shadow" projection on the 3D plot!
+    
+    This visualization maps out the same process that computational thermodynamics software uses:
+    
+    - Each temperature slice shows where the phases have equal chemical potential
+    - The collection of these points forms the phase boundaries
+    - The "shadow" on the bottom plane is the resulting phase diagram
+    
+    Whether calculated by hand or by software like Thermo-Calc, the process is the same: finding where the Gibbs energy surfaces meet at each temperature.
     
     ### The Mathematical Magic:
     
@@ -759,6 +775,17 @@ def __(mo):
 def __(mo):
     mo.md(r"""
     ---
+    
+    ### Learn More
+    
+    **Foundational Reading:**
+    - Gaskell, D.R. (2017). *Introduction to the Thermodynamics of Materials* - Chapter 9: Binary Phase Diagrams
+    - Porter, D.A. & Easterling, K.E. (2021). *Phase Transformations in Metals and Alloys* - Chapter 1: Thermodynamics and Phase Diagrams
+    
+    **Computational Tools:**
+    Modern phase diagrams are calculated using CALPHAD (CALculation of PHAse Diagrams) methods. Software includes:
+    - Commercial: Thermo-Calc, PANDAT, FactSage
+    - Open source: PyCalphad, OpenCalphad
     
     ### About This Notebook
     
