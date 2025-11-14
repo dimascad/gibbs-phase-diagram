@@ -39,7 +39,7 @@ def __(mo):
         show_value=True
     )
     temperature_slider
-    return (temperature_slider,)
+    return temperature_slider,
 
 
 @app.cell
@@ -377,9 +377,9 @@ def __(
             ax_3d.add_collection3d(poly)
         
         # Add phase labels on bottom
-        ax_3d.text(0.05, 900, z_bottom + 1000, '±', fontsize=14, color='blue', weight='bold')
-        ax_3d.text(0.95, 900, z_bottom + 1000, '²', fontsize=14, color='red', weight='bold')
-        ax_3d.text(0.5, 700, z_bottom + 1000, '± + ²', fontsize=12, color='purple', weight='bold')
+        ax_3d.text(0.05, 900, z_bottom + 1000, 'α', fontsize=14, color='blue', weight='bold')
+        ax_3d.text(0.95, 900, z_bottom + 1000, 'β', fontsize=14, color='red', weight='bold')
+        ax_3d.text(0.5, 700, z_bottom + 1000, 'α + β', fontsize=12, color='purple', weight='bold')
     
     # Add vertical drop lines from current temperature
     if tangent_found and valid_temps_shadow:
@@ -408,8 +408,8 @@ def __(
     G_beta_line = [calc_G_beta_3d(x, T) for x in x_line]
     T_line = np.full_like(x_line, T)
     
-    ax_3d.plot(x_line, T_line, G_alpha_line, 'b-', linewidth=3, label='± phase (current T)')
-    ax_3d.plot(x_line, T_line, G_beta_line, 'r-', linewidth=3, label='² phase (current T)')
+    ax_3d.plot(x_line, T_line, G_alpha_line, 'b-', linewidth=3, label='α phase (current T)')
+    ax_3d.plot(x_line, T_line, G_beta_line, 'r-', linewidth=3, label='β phase (current T)')
     
     # Highlight the current temperature plane
     # Make sure it extends all the way down to the bottom plane
@@ -442,8 +442,8 @@ def __(
     G_beta_vals = [G_beta(x) for x in x_range]
     
     # Plot the curves
-    ax_2d.plot(x_range, G_alpha_vals, 'b-', linewidth=2, label='± phase')
-    ax_2d.plot(x_range, G_beta_vals, 'r-', linewidth=2, label='² phase')
+    ax_2d.plot(x_range, G_alpha_vals, 'b-', linewidth=2, label='α phase')
+    ax_2d.plot(x_range, G_beta_vals, 'r-', linewidth=2, label='β phase')
     
     # Plot common tangent if found
     if tangent_found:
@@ -563,11 +563,11 @@ def __(
     
     if valid_temps:
         # Plot the binodal curve
-        ax_phase.plot(x1_values, valid_temps, 'b-', linewidth=2, label='± phase boundary')
-        ax_phase.plot(x2_values, valid_temps, 'r-', linewidth=2, label='² phase boundary')
+        ax_phase.plot(x1_values, valid_temps, 'b-', linewidth=2, label='α phase boundary')
+        ax_phase.plot(x2_values, valid_temps, 'r-', linewidth=2, label='β phase boundary')
         
         # Fill the two-phase region
-        ax_phase.fill_betweenx(valid_temps, x1_values, x2_values, alpha=0.15, color='#9b59b6', label='± + ²')
+        ax_phase.fill_betweenx(valid_temps, x1_values, x2_values, alpha=0.15, color='#9b59b6', label='α + β')
         
         # Add horizontal tie lines to show the two-phase region structure
         # Sample every few temperatures to avoid clutter
@@ -579,12 +579,12 @@ def __(
         
         # Add labels for single-phase regions and two-phase region
         if x1_values:
-            # Position ± label near the left boundary
-            ax_phase.text(min(x1_values) - 0.05, np.mean(valid_temps), '±', fontsize=14, ha='center', color='blue')
-            # Position ² label near the right boundary  
-            ax_phase.text(max(x2_values) + 0.05, np.mean(valid_temps), '²', fontsize=14, ha='center', color='red')
-            # Add ± + ² label in the middle of the two-phase region
-            ax_phase.text(np.mean([np.mean(x1_values), np.mean(x2_values)]), np.mean(valid_temps), '± + ²', 
+            # Position α label near the left boundary
+            ax_phase.text(min(x1_values) - 0.05, np.mean(valid_temps), 'α', fontsize=14, ha='center', color='blue')
+            # Position β label near the right boundary  
+            ax_phase.text(max(x2_values) + 0.05, np.mean(valid_temps), 'β', fontsize=14, ha='center', color='red')
+            # Add α + β label in the middle of the two-phase region
+            ax_phase.text(np.mean([np.mean(x1_values), np.mean(x2_values)]), np.mean(valid_temps), 'α + β', 
                          fontsize=12, ha='center', color='purple')
         
         # Mark current temperature only between phase boundaries
@@ -623,6 +623,7 @@ def __(
         G_beta_surf,
         G_beta_temp,
         G_beta_vals,
+        GridSpec,
         Poly3DCollection,
         T_grid,
         T_line,
@@ -641,14 +642,13 @@ def __(
         dG_beta_dx_temp,
         fig_combined,
         finite_vals,
-        guess,
         gs,
+        guess,
         i,
         info,
         n_segments,
         poly,
         result,
-        slope,
         slope_diff,
         surf_alpha,
         surf_beta,
@@ -657,6 +657,7 @@ def __(
         temp,
         temperatures,
         temperatures_shadow,
+        tie_line_indices,
         valid_temps,
         valid_temps_shadow,
         verts,
@@ -685,11 +686,10 @@ def __(
         z_bottom,
         z_end,
         z_max,
-        z_min,
+        z_min_plane,
         z_start,
         zz,
     )
-
 
 
 @app.cell
@@ -699,8 +699,8 @@ def __(mo, tangent_found, x1_tangent, x2_tangent):
 
     At the selected temperature:
     - Common tangent found: {"Yes" if tangent_found else "No"}
-    {f"- ± phase composition: x_B = {x1_tangent:.3f}" if tangent_found else ""}
-    {f"- ² phase composition: x_B = {x2_tangent:.3f}" if tangent_found else ""}
+    {f"- α phase composition: x_B = {x1_tangent:.3f}" if tangent_found else ""}
+    {f"- β phase composition: x_B = {x2_tangent:.3f}" if tangent_found else ""}
 
     The common tangent construction determines the equilibrium compositions of coexisting phases. When two phases coexist at equilibrium, they must have equal chemical potentials, which is represented geometrically by the common tangent line touching both Gibbs curves.
     """)
@@ -717,7 +717,7 @@ def __(mo):
     - **Y-axis**: Temperature (K)
     - **Z-axis**: Gibbs free energy (J/mol)
     
-    Each phase (± and ²) forms its own 3D surface. The 2D plots you see are horizontal slices through these surfaces at constant temperature.
+    Each phase (α and β) forms its own 3D surface. The 2D plots you see are horizontal slices through these surfaces at constant temperature.
     
     ## Understanding the Visualizations
     
