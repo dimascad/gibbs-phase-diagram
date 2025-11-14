@@ -20,30 +20,6 @@ def __():
 def __(mo):
     mo.md(r"""
     # Gibbs Free Energy and Phase Diagrams: Interactive Visualization
-    
-    This interactive notebook demonstrates how temperature affects Gibbs free energy curves and how the common tangent construction determines phase boundaries.
-    
-    ## The 3D Thermodynamic Surface
-    
-    Imagine a 3D surface where:
-    - **X-axis**: Composition (mole fraction of component B)
-    - **Y-axis**: Temperature (K)
-    - **Z-axis**: Gibbs free energy (J/mol)
-    
-    Each phase (α and β) forms its own 3D surface. The 2D plots you see are horizontal slices through these surfaces at constant temperature.
-    
-    ## The Physics Behind It
-    
-    The Gibbs free energy for each phase is calculated using the **regular solution model**:
-    
-    $$G = G_{reference} + G_{mixing} + G_{excess}$$
-    
-    Where:
-    - $G_{reference} = x \cdot G°_B + (1-x) \cdot G°_A$ (temperature-dependent)
-    - $G_{mixing} = RT[x \ln(x) + (1-x) \ln(1-x)]$ (entropy of mixing)
-    - $G_{excess} = x(1-x) \cdot \omega$ (interaction energy)
-    
-    **Use the slider below to explore different temperature slices of the 3D surface!**
     """)
     return
 
@@ -197,14 +173,6 @@ def __(G_alpha, G_beta, dG_alpha_dx, dG_beta_dx, fsolve, np):
     
     x1_tangent, x2_tangent, tangent_found = find_common_tangent()
     return find_common_tangent, tangent_found, x1_tangent, x2_tangent
-
-
-@app.cell
-def __(mo):
-    mo.md(r"""
-    ## Interactive Thermodynamic Visualization
-    """)
-    return
 
 
 @app.cell
@@ -725,6 +693,28 @@ def __(mo, tangent_found, x1_tangent, x2_tangent):
 @app.cell
 def __(mo):
     mo.md(r"""
+    ## The 3D Thermodynamic Surface
+    
+    This interactive notebook demonstrates how temperature affects Gibbs free energy curves and how the common tangent construction determines phase boundaries.
+    
+    Imagine a 3D surface where:
+    - **X-axis**: Composition (mole fraction of component B)
+    - **Y-axis**: Temperature (K)
+    - **Z-axis**: Gibbs free energy (J/mol)
+    
+    Each phase (α and β) forms its own 3D surface. The 2D plots you see are horizontal slices through these surfaces at constant temperature.
+    
+    ## The Physics Behind It
+    
+    The Gibbs free energy for each phase is calculated using the **regular solution model**:
+    
+    $$G = G_{reference} + G_{mixing} + G_{excess}$$
+    
+    Where:
+    - $G_{reference} = x \cdot G°_B + (1-x) \cdot G°_A$ (temperature-dependent)
+    - $G_{mixing} = RT[x \ln(x) + (1-x) \ln(1-x)]$ (entropy of mixing)
+    - $G_{excess} = x(1-x) \cdot \omega$ (interaction energy)
+    
     ## Understanding the 3D → 2D Connection
     
     ### What You're Seeing:
@@ -733,7 +723,7 @@ def __(mo):
     
     2. **The 2D Plots (middle)**: These are the intersection of the green plane with the 3D surfaces - like cutting through a mountain and looking at the cross-section.
     
-    3. **The Phase Diagram (right)**: Maps out all the common tangent points across all temperatures, creating the phase boundaries.
+    3. **The Phase Diagram (right)**: Shows how the common tangent segments at each temperature combine to form the complete phase boundary region. The green dashed line indicates the current temperature's equilibrium compositions. Notice how these boundaries perfectly match the "shadow" projection on the 3D plot!
     
     ### The Mathematical Magic:
     
