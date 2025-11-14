@@ -23,7 +23,7 @@ def __():
 @app.cell
 def __(mo):
     mo.md(r"""
-    # Gibbs Free Energy & Phase Diagrams: Interactive Visualization
+    # Phase Diagrams: From Shadows to Surfaces
     
     ## The Geometry Behind Phase Diagrams
     
