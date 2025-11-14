@@ -560,7 +560,7 @@ def __(mo):
     ### About This Notebook
     
     **Author:** Anthony DiMascio  
-    **Course:** OSU MATSCEN 3141 (5870) - Autumn 2025  
+    **Course:** Phase Transformations in Metals & Alloys - Autumn 2025  
     **Instructor:** Professor Yunzhi Wang  
     **Live Demo:** [https://dimascad.github.io/gibbs-phase-diagram/](https://dimascad.github.io/gibbs-phase-diagram/)
     
