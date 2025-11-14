@@ -762,9 +762,12 @@ def __(mo):
     
     ### About This Notebook
     
-    **Author:** Anthony DiMascio  
-    **Course:** OSU MATSCEN 3141 (5870) - Autumn 2025  
-    **Instructor:** Professor Yunzhi Wang  
+    **Author:** Anthony DiMascio
+    
+    **Course:** Phase Transformations in Metals & Alloys - Autumn 2025
+    
+    **Instructor:** Professor Yunzhi Wang
+    
     **Live Demo:** [https://dimascad.github.io/gibbs-phase-diagram/](https://dimascad.github.io/gibbs-phase-diagram/)
     
     This interactive visualization was created using [marimo](https://marimo.io), a reactive Python notebook that enables real-time updates across all visualizations. The thermodynamic model uses regular solution theory with temperature-dependent reference energies to demonstrate phase equilibria principles.
