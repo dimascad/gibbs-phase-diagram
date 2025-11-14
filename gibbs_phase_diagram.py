@@ -19,7 +19,7 @@ def __():
 @app.cell
 def __(mo):
     mo.md(r"""
-    # Gibbs Free Energy and Phase Diagrams: Interactive Visualization
+    # Gibbs Free Energy & Phase Diagrams: Interactive Visualization
     """)
     return
 
@@ -711,9 +711,12 @@ def __(mo):
     $$G = G_{reference} + G_{mixing} + G_{excess}$$
     
     Where:
-    - $G_{reference} = x \cdot G°_B + (1-x) \cdot G°_A$ (temperature-dependent)
-    - $G_{mixing} = RT[x \ln(x) + (1-x) \ln(1-x)]$ (entropy of mixing)
-    - $G_{excess} = x(1-x) \cdot \omega$ (interaction energy)
+    
+    $$G_{reference} = x \cdot G°_B + (1-x) \cdot G°_A \text{ (temperature-dependent)}$$
+    
+    $$G_{mixing} = RT[x \ln(x) + (1-x) \ln(1-x)] \text{ (entropy of mixing)}$$
+    
+    $$G_{excess} = x(1-x) \cdot \omega \text{ (interaction energy)}$$
     
     ## Understanding the 3D → 2D Connection
     
