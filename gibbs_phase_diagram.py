@@ -2,19 +2,10 @@ import marimo
 
 __generated_with = "0.10.19"
 app = marimo.App(width="medium")
-
-
-@app.cell(hide_code=True)
-def __(mo):
-    # Preview animation for gallery
-    mo.md(r"""
-    <div align="center">
-    <img src="https://raw.githubusercontent.com/dimascad/gibbs-phase-diagram/main/preview.gif" 
-         alt="Gibbs Phase Diagram Animation" 
-         style="max-width: 100%; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    </div>
-    """)
-    return
+app._metadata = {
+    "app_title": "Gibbs Phase Diagram",
+    "preview": "preview.gif"
+}
 
 
 @app.cell
